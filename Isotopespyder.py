@@ -2,8 +2,6 @@ import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup
 import collections
 
-
-
 urlfilter = "nuclide.asp?iZA"
 baseurl="http://nucleardata.nuclear.lu.se/toi/listnuc.asp?"
 rooturl="http://nucleardata.nuclear.lu.se/toi/"
