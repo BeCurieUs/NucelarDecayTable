@@ -1,12 +1,14 @@
 import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup
 import collections
+import json
 
 urlfilter = "nuclide.asp?iZA"
 baseurl="http://nucleardata.nuclear.lu.se/toi/listnuc.asp?"
 rooturl="http://nucleardata.nuclear.lu.se/toi/"
 allisotopes = []
 isotopeproperties=[]
+jsonToExport = []
 
 #Range sets the range of values to extract based on atomic mass
 #the ranges are fed into some urls to extract all url pages for individual isotope data
@@ -15,8 +17,9 @@ for atomicweight in range(1,12):
     html = urllib.request.urlopen(addedurl).read()
     soup = BeautifulSoup(html, 'html.parser')
     tags = soup('a')
-    #each atomic mass might have several isotopes, have to iterate through
+    # each atomic mass might have several isotopes, have to iterate through
     for link in tags:
+        # Grab only the corrent links, not links to the outside
         if link.get('href').startswith("nuclide.asp?iZA"):
             allisotopes.append(rooturl+link.get('href'))
 
@@ -54,13 +57,13 @@ for isotopes in allisotopes:
     #Nab each one in the array, make sure not to get it backwards like I did
 
     #this code is now only.....
-#    findalltr = doublethesoup.find_all('tr')
-#    for value in findalltr:
-#        if value.th:
-#
-#        if value.th.get_text().startswith("Half"):
-#            print("Half life     : " +value.td.get_text())
-#....This code, oh god why did I make this so hard keeping as memorial to learning
+    #    findalltr = doublethesoup.find_all('tr')
+    #    for value in findalltr:
+    #        if value.th:
+    #
+    #        if value.th.get_text().startswith("Half"):
+    #            print("Half life     : " +value.td.get_text())
+    #....This code bellow, oh god why did I make this so hard keeping as memorial to learning
     halflife = doublethesoup.find(text="Half life: ").find_next('td').get_text()
 
     #Sadly, we must now brute force
@@ -102,6 +105,9 @@ for isotopes in allisotopes:
 
 
     #print(decaylist)
-    for key,val in decaylist.items():
-        print(key+" "+val)
-    print("")
+    # for key,val in decaylist.items():
+    #     print(key+" "+val)
+    # print("")
+
+    jsonToExport.append(json.dumps(decaylist))
+    print(jsonToExport)
